@@ -1,0 +1,24 @@
+scalar JSON
+
+type IndustryDetail{
+    id:Int
+    industryId:Int
+    industryTypeName:String
+    timestamp:String
+}
+
+type IndustryDetailResult{
+    data:[IndustryDetail]
+    total:Int
+}
+
+type Query{
+
+    industryDetails(
+        id:Int
+        industryId:Int
+        industryTypeName:String
+        skip:Int
+        take:Int
+    ):IndustryDetailResult
+}

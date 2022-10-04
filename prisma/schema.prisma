@@ -7,16 +7,224 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model app_pro_log {
+  log_id         Int           @id @default(autoincrement()) @db.UnsignedInt
+  src_ip         String?       @db.VarChar(40)
+  src_port       Int?
+  src_country    String?       @db.VarChar(100)
+  src_province   String?       @db.VarChar(100)
+  src_city       String?       @db.VarChar(100)
+  src_county     String?       @db.VarChar(100)
+  src_isp        String?       @db.VarChar(100)
+  src_lati_long  String?       @db.VarChar(100)
+  src_username   String?       @db.VarChar(100)
+  dst_ip         String?       @db.VarChar(100)
+  dst_port       Int?
+  dst_country    String?       @db.VarChar(100)
+  dst_province   String?       @db.VarChar(100)
+  dst_city       String?       @db.VarChar(100)
+  dst_county     String?       @db.VarChar(100)
+  dst_isp        String?       @db.VarChar(100)
+  dst_lati_long  String?       @db.VarChar(100)
+  dst_username   String?       @db.VarChar(100)
+  protocol       String?       @db.VarChar(40)
+  byte_count     Int?
+  ctos           Int?
+  stoc           Int?
+  sni            String?       @db.VarChar(1000)
+  app_id         Int?          @db.UnsignedInt
+  time_log       DateTime?     @db.DateTime(0)
+  un_used_field1 String?       @db.VarChar(40)
+  un_used_field2 String?       @db.VarChar(40)
+  un_used_field3 String?       @db.VarChar(40)
+  un_used_field4 String?       @db.VarChar(40)
+  un_used_field5 String?       @db.VarChar(40)
+  session_id     String?       @db.VarChar(100)
+  app_protocol   app_protocol? @relation(fields: [app_id], references: [app_id], onDelete: Restrict, onUpdate: Restrict, map: "foreign1")
+
+  @@index([app_id], map: "foreign1")
+}
+
+model app_pro_type_assc {
+  assc_id      Int           @id @default(autoincrement()) @db.UnsignedInt
+  app_id       Int?          @db.UnsignedInt
+  app_type_id  Int?          @db.UnsignedInt
+  app_protocol app_protocol? @relation(fields: [app_id], references: [app_id], onDelete: Restrict, onUpdate: Restrict, map: "app_id")
+  app_type     app_type?     @relation(fields: [app_type_id], references: [app_type_id], onDelete: Restrict, onUpdate: Restrict, map: "app_type_id")
+
+  @@index([app_id], map: "app_id")
+  @@index([app_type_id], map: "app_type_id")
+}
+
+model app_protocol {
+  app_id            Int                 @id @default(autoincrement()) @db.UnsignedInt
+  app_name          String?             @db.VarChar(100)
+  app_pro_log       app_pro_log[]
+  app_pro_type_assc app_pro_type_assc[]
+}
+
+model app_type {
+  app_type_id       Int                 @id @default(autoincrement()) @db.UnsignedInt
+  app_type          String?             @db.VarChar(100)
+  app_pro_type_assc app_pro_type_assc[]
+}
+
+model email_log {
+  id            Int       @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  src_ip        String?   @db.VarChar(40)
+  src_port      Int?      @db.UnsignedInt
+  src_country   String?   @db.VarChar(40)
+  src_province  String?   @db.VarChar(40)
+  src_city      String?   @db.VarChar(40)
+  src_county    String?   @db.VarChar(40)
+  src_isp       String?   @db.VarChar(40)
+  src_lati_long String?   @db.VarChar(40)
+  src_username  String?   @db.VarChar(40)
+  dst_ip        String?   @db.VarChar(40)
+  dst_port      Int?      @db.UnsignedInt
+  dst_country   String?   @db.VarChar(40)
+  dst_province  String?   @db.VarChar(40)
+  dst_city      String?   @db.VarChar(40)
+  dst_county    String?   @db.VarChar(40)
+  dst_isp       String?   @db.VarChar(40)
+  dst_lati_long String?   @db.VarChar(40)
+  dst_username  String?   @db.VarChar(40)
+  protocol      String?   @db.VarChar(40)
+  byte_count    Int?      @db.UnsignedInt
+  ctos          Int?      @db.UnsignedInt
+  stoc          Int?      @db.UnsignedInt
+  sender        String?   @db.VarChar(40)
+  receiver      String?   @db.VarChar(40)
+  title         String?   @db.VarChar(40)
+  hit_rule_id   Int?      @db.UnsignedInt
+  hit_content   String?   @db.VarChar(5000)
+  session_id    String?   @db.VarChar(40)
+  time_log      DateTime? @db.DateTime(0)
+  unused_field1 String?   @db.VarChar(40)
+  unused_field2 String?   @db.VarChar(40)
+}
+
+model found_files {
+  id         Int    @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  session_id String @db.VarChar(40)
+  path       String @db.VarChar(200)
+
+  @@index([path], map: "path")
+}
+
+model ftp_log {
+  id            Int       @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  src_ip        String?   @db.VarChar(40)
+  src_port      Int?      @db.UnsignedInt
+  src_country   String?   @db.VarChar(40)
+  src_province  String?   @db.VarChar(40)
+  src_city      String?   @db.VarChar(40)
+  src_county    String?   @db.VarChar(40)
+  src_username  String?   @db.VarChar(40)
+  src_isp       String?   @db.VarChar(40)
+  src_lati_long String?   @db.VarChar(40)
+  dst_ip        String?   @db.VarChar(40)
+  dst_port      Int?      @db.UnsignedInt
+  dst_country   String?   @db.VarChar(40)
+  dst_province  String?   @db.VarChar(40)
+  dst_city      String?   @db.VarChar(40)
+  dst_county    String?   @db.VarChar(40)
+  dst_username  String?   @db.VarChar(40)
+  dst_isp       String?   @db.VarChar(40)
+  dst_lati_long String?   @db.VarChar(40)
+  protocol      String?   @db.VarChar(40)
+  byte_count    Int?      @db.UnsignedInt
+  ctos          Int?      @db.UnsignedInt
+  stoc          Int?      @db.UnsignedInt
+  hit_rule_id   Int?      @db.UnsignedInt
+  hit_content   String?   @db.VarChar(1000)
+  session_id    String?   @db.VarChar(40)
+  time_log      DateTime? @db.DateTime(0)
+  unused_field1 String?   @db.VarChar(40)
+  unused_field2 String?   @db.VarChar(40)
+}
+
+model http_log {
+  id            Int       @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  src_ip        String?   @db.VarChar(40)
+  src_port      Int?      @db.UnsignedInt
+  src_country   String?   @db.VarChar(100)
+  src_province  String?   @db.VarChar(100)
+  src_county    String?   @db.VarChar(100)
+  src_city      String?   @db.VarChar(40)
+  src_username  String?   @db.VarChar(100)
+  src_isp       String?   @db.VarChar(40)
+  src_lati_long String?   @db.VarChar(40)
+  des_ip        String?   @db.VarChar(40)
+  des_port      Int?      @db.UnsignedInt
+  des_country   String?   @db.VarChar(100)
+  des_province  String?   @db.VarChar(100)
+  des_city      String?   @db.VarChar(40)
+  des_county    String?   @db.VarChar(100)
+  des_username  String?   @db.VarChar(100)
+  des_isp       String?   @db.VarChar(40)
+  des_lati_long String?   @db.VarChar(40)
+  protocol      String?   @db.VarChar(40)
+  byte_count    Int?      @db.UnsignedInt
+  ctos          Int?      @db.UnsignedInt
+  stoc          Int?      @db.UnsignedInt
+  URL           String?   @db.VarChar(5000)
+  hit_rule_id   Int?      @db.UnsignedInt
+  hit_content   String?   @db.VarChar(5000)
+  session_id    String?   @db.VarChar(40)
+  time_log      DateTime? @db.DateTime(0)
+  unused_field1 String?   @db.VarChar(40)
+  unused_field2 String?   @db.VarChar(40)
+}
+
+model industry_info {
+  id            Int       @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  industry_name String?   @db.VarChar(40)
+  timestamp     DateTime? @db.DateTime(0)
+}
+
+model industry_type {
+  id                 Int       @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  industry_id        Int?      @db.UnsignedInt
+  industry_type_name String?   @db.VarChar(40)
+  timestamp          DateTime? @db.DateTime(0)
+}
+
 model sensitive_rules {
-  id                          Int    @id @default(autoincrement())
-  uuid                        String @db.VarChar(255)
-  name                        String @db.VarChar(255)
-  sensitive_level_id          Int
-  recognition_model_id        Int
-  classification_template_id  Int
-  sensitive_classification_id String @db.VarChar(255)
-  status                      Int
-  scan_range                  Json?
-  create_time                 Int?
-  update_time                 Int?
+  id               Int       @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  industry_type_id Int?      @db.UnsignedInt
+  name             String?   @db.VarChar(40)
+  rule             String?   @db.VarChar(512)
+  timestamp        DateTime? @db.DateTime(0)
+}
+
+model ssl_log {
+  id               Int       @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  src_ip           String?   @db.VarChar(40)
+  src_port         Int?      @db.UnsignedInt
+  src_country      String?   @db.VarChar(40)
+  src_province     String?   @db.VarChar(40)
+  src_city         String?   @db.VarChar(40)
+  src_county       String?   @db.VarChar(40)
+  src_isp          String?   @db.VarChar(40)
+  src_lati_long    String?   @db.VarChar(40)
+  src_username     String?   @db.VarChar(40)
+  dst_ip           String?   @db.VarChar(40)
+  dst_port         Int?      @db.UnsignedInt
+  dst_country      String?   @db.VarChar(40)
+  dst_province     String?   @db.VarChar(40)
+  dst_city         String?   @db.VarChar(40)
+  dst_county       String?   @db.VarChar(40)
+  dst_isp          String?   @db.VarChar(40)
+  dst_lati_long    String?   @db.VarChar(40)
+  dst_username     String?   @db.VarChar(40)
+  protocol         String?   @db.VarChar(40)
+  byte_count       Int?      @db.UnsignedInt
+  ctos             Int?      @db.UnsignedInt
+  stoc             Int?      @db.UnsignedInt
+  SNI              String?   @db.VarChar(1000)
+  session_id       String?   @db.VarChar(40)
+  time_log         DateTime? @db.DateTime(0)
+  industry_info_id Int?
+  unused_field2    String?   @db.VarChar(40)
 }

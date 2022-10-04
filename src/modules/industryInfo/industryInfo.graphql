@@ -1,0 +1,34 @@
+scalar JSON
+
+type IndustryInfo{
+    id: Int
+    industryName: String
+    timestamp: String
+}
+
+input CreateIndustryInfoInput{
+    name:String
+}
+
+type IndustryInfoResult{
+    data:[IndustryInfo]
+    total:Int
+}
+
+type Query{
+
+    industryInfos(
+        id:Int
+        industryName:String
+        take:Int
+        skip:Int
+    ):IndustryInfoResult
+}
+
+type Mutation{
+    createIndustryInfo(
+        createIndustryInfoInput:CreateIndustryInfoInput
+    ):IndustryInfo
+
+    deleteIndustyInfo(id:Int):IndustryInfo
+}
